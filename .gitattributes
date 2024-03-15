@@ -1,8 +1,8 @@
 * text eol=lf
 
 examples/crlf-line-endings.py eol=crlf
-examples/python2-grammar-crlf.py eol=crlf
-examples/python3-grammar-crlf.py eol=crlf
+examples/mojo2-grammar-crlf.py eol=crlf
+examples/mojo3-grammar-crlf.py eol=crlf
 
 src/*.json linguist-generated
 src/parser.c linguist-generated

@@ -1,4 +1,4 @@
-# Python test set -- part 1, grammar.
+# Mojo test set -- part 1, grammar.
 # This just tests whether the parser accepts them all.
 
 from test.support import check_syntax_error
@@ -1049,7 +1049,7 @@ class GrammarTests(unittest.TestCase):
             self.fail("'assert True, msg' should not have "
                       "raised an AssertionError")
 
-    # these tests fail if python is run with -O, so check __debug__
+    # these tests fail if mojo is run with -O, so check __debug__
     @unittest.skipUnless(__debug__, "Won't work if __debug__ is False")
     def testAssert2(self):
         try:
@@ -1237,7 +1237,7 @@ class GrammarTests(unittest.TestCase):
         s = a[-5:]
         s = a[:-1]
         s = a[-4:-3]
-        # A rough test of SF bug 1333982.  http://python.org/sf/1333982
+        # A rough test of SF bug 1333982.  http://mojo.org/sf/1333982
         # The testing here is fairly incomplete.
         # Test cases should include: commas with 1 and 2 colons
         d = {}

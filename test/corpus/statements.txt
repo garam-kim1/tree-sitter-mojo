@@ -94,7 +94,7 @@ Future import statements
 ================================================================================
 
 from __future__ import print_statement
-from __future__ import python4
+from __future__ import mojo4
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 --------------------------------------------------------------------------------
@@ -914,7 +914,7 @@ def foo():
 Empty blocks
 ================================================================================
 
-# These are not actually valid python; blocks
+# These are not actually valid mojo; blocks
 # must contain at least one statement. But we
 # allow them because error recovery for empty
 # blocks doesn't work very well otherwise.

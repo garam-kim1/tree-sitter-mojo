@@ -1,5 +1,5 @@
 {
-  "name": "python",
+  "name": "mojo",
   "word": "identifier",
   "rules": {
     "module": {
@@ -1586,8 +1586,25 @@
           "type": "CHOICE",
           "members": [
             {
-              "type": "STRING",
-              "value": "async"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "async"
+                },
+                {
+                  "type": "STRING",
+                  "value": "owned"
+                },
+                {
+                  "type": "STRING",
+                  "value": "borrowed"
+                },
+                {
+                  "type": "STRING",
+                  "value": "inout"
+                }
+              ]
             },
             {
               "type": "BLANK"
@@ -1595,8 +1612,17 @@
           ]
         },
         {
-          "type": "STRING",
-          "value": "def"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "def"
+            },
+            {
+              "type": "STRING",
+              "value": "fn"
+            }
+          ]
         },
         {
           "type": "FIELD",
@@ -1889,8 +1915,17 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "STRING",
-          "value": "class"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "class"
+            },
+            {
+              "type": "STRING",
+              "value": "struct"
+            }
+          ]
         },
         {
           "type": "FIELD",
@@ -4209,6 +4244,31 @@
       "type": "SEQ",
       "members": [
         {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "var"
+                },
+                {
+                  "type": "STRING",
+                  "value": "let"
+                },
+                {
+                  "type": "STRING",
+                  "value": "alias"
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
           "type": "FIELD",
           "name": "left",
           "content": {
@@ -4289,6 +4349,31 @@
     "augmented_assignment": {
       "type": "SEQ",
       "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "var"
+                },
+                {
+                  "type": "STRING",
+                  "value": "let"
+                },
+                {
+                  "type": "STRING",
+                  "value": "alias"
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
         {
           "type": "FIELD",
           "name": "left",

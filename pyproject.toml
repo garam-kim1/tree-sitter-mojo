@@ -3,10 +3,10 @@ requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "tree-sitter-python"
-description = "Python grammar for tree-sitter"
+name = "tree-sitter-mojo"
+description = "Mojo grammar for tree-sitter"
 version = "0.21.0"
-keywords = ["parsing", "incremental", "python"]
+keywords = ["parsing", "incremental", "mojo"]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
@@ -18,7 +18,7 @@ authors = [
   {name = "Max Brunsfeld"},
   {name = "Amaan Qureshi"}
 ]
-requires-python = ">=3.8"
+requires-mojo = ">=3.8"
 license.text = "MIT"
 readme = "README.md"
 

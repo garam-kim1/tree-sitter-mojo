@@ -1,6 +1,6 @@
-# tree-sitter-python
+# tree-sitter-mojo
 
-This crate provides a Python grammar for the [tree-sitter][] parsing library.
+This crate provides a Mojo grammar for the [tree-sitter][] parsing library.
 To use this crate, add it to the `[dependencies]` section of your `Cargo.toml`
 file. (Note that you will probably also need to depend on the
 [`tree-sitter`][tree-sitter crate] crate to use the parsed result in any useful
@@ -9,7 +9,7 @@ way.)
 ```toml
 [dependencies]
 tree-sitter = "0.20.10"
-tree-sitter-python = "0.20.4"
+tree-sitter-mojo = "0.20.4"
 ```
 
 Typically, you will use the [language][language func] function to add this
@@ -21,14 +21,14 @@ let code = r#"
         return x * 2
 "#;
 let mut parser = Parser::new();
-parser.set_language(tree_sitter_python::language()).expect("Error loading Python grammar");
+parser.set_language(tree_sitter_mojo::language()).expect("Error loading Mojo grammar");
 let parsed = parser.parse(code, None);
 ```
 
 If you have any questions, please reach out to us in the [tree-sitter
 discussions] page.
 
-[language func]: https://docs.rs/tree-sitter-python/*/tree_sitter_python/fn.language.html
+[language func]: https://docs.rs/tree-sitter-mojo/*/tree_sitter_mojo/fn.language.html
 [Parser]: https://docs.rs/tree-sitter/*/tree_sitter/struct.Parser.html
 [tree-sitter]: https://tree-sitter.github.io/
 [tree-sitter crate]: https://crates.io/crates/tree-sitter

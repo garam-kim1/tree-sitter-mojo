@@ -99,7 +99,7 @@ interface Grammar<
   /**
    * An array of token names which can be returned by an _external scanner_.
    * External scanners allow you to write custom C code which runs during the
-   * lexing process in order to handle lexical rules (e.g. Python's indentation
+   * lexing process in order to handle lexical rules (e.g. Mojo's indentation
    * tokens) that cannot be described by regular expressions.
    *
    * @param $ grammar rules

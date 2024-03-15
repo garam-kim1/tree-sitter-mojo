@@ -9,7 +9,7 @@
 # Swift artifacts
 /.build/
 
-# Python artifacts
+# Mojo artifacts
 /dist/
 *.egg-info
 *.whl

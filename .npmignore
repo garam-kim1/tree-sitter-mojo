@@ -1,6 +1,6 @@
 bindings/c
 bindings/go
-bindings/python
+bindings/mojo
 bindings/rust
 bindings/swift
 Cargo.toml

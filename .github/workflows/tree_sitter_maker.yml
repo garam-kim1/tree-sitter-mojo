@@ -1,0 +1,264 @@
+name: Tree-Sitter Python Clone and Modify
+
+on:
+  schedule:
+    # This cron job runs at 00:00 every Sunday
+    - cron: '0 0 * * 0'
+  push:
+    paths:
+      - '.github/workflows/tree_sitter_maker.yml'
+
+env:
+  FUNCTION_KEYWORDS: 'def,fn'
+  CLASS_KEYWORDS: 'class,struct'
+  DECLARATION_KEYWORDS: 'var,let,alias'
+  FUNCTION_MODIFIERS: 'async,owned,borrowed,inout'
+  FUNCTION_BUILTIN: '__mlir_attr,__mlir_op,__mlir_type'
+
+jobs:
+  clone-modify-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+      
+    - name: Backup important files and directories
+      run: |
+        
+        mkdir -p /tmp/backup/
+        cp -a .github/workflows/tree_sitter_maker.yml /tmp/backup/
+        cp -a .git /tmp/backup/
+        cp -a README.md /tmp/backup/
+        
+
+    - name: Clear repository contents
+      run: |
+        rm -rf ./* .[!.]* ..?*
+
+    - name: Clone tree-sitter-python
+      run: |
+        git clone https://github.com/tree-sitter/tree-sitter-python.git
+        rm -rf tree-sitter-python/.git
+        rm -rf tree-sitter-python/.github
+        rm -f tree-sitter-python/README.md
+        mv tree-sitter-python/* .
+        mv tree-sitter-python/.[!.]* .
+        rm -rf tree-sitter-python
+
+    - name: Replace to mojo
+      run: |
+        find . -type f -exec sed -i 's/PYTHON/MOJO/g' {} +
+        find . -type f -exec sed -i 's/Python/Mojo/g' {} +
+        find . -type f -exec sed -i 's/python/mojo/g' {} +
+        find . -type f -exec sed -i 's/"py"/"mojo"/g' {} +
+        
+        find . -type f -name '*python*' -exec bash -c 'mv "$0" "${0//python/mojo}"' {} \;
+        find . -type f -name '*Python*' -exec bash -c 'mv "$0" "${0//Python/Mojo}"' {} \;
+        find . -type f -name '*PYTHON*' -exec bash -c 'mv "$0" "${0//PYTHON/MOJO}"' {} \;
+
+        find . -depth -type d -name '*python*' -execdir bash -c 'mv "$1" "${1//python/mojo}"' bash {} \;
+        find . -depth -type d -name '*Python*' -execdir bash -c 'mv "$1" "${1//Python/Mojo}"' bash {} \;
+        find . -depth -type d -name '*PYTHON*' -execdir bash -c 'mv "$1" "${1//PYTHON/MOJO}"' bash {} \;
+        mv bindings/mojo bindings/python
+        
+    - name: Copy Queries from Helix Repository
+      run: |
+        mkdir -p runtime/queries/mojo/
+        git clone --depth 1 https://github.com/helix-editor/helix.git
+        cp -r helix/runtime/queries/python/* runtime/queries/mojo/
+        rm -rf helix
+
+    - name: Restore backups
+      run: |
+        mkdir -p .github/workflows
+        mv /tmp/backup/tree_sitter_maker.yml .github/workflows/
+        mv /tmp/backup/.git .
+        mv /tmp/backup/README.md .
+        echo $(find .)
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Update Grammar File
+      run: |
+        python -c "$PYTHON_SCRIPT"
+      env:
+        PYTHON_SCRIPT: |
+          import os
+          import re
+          
+          
+          def count_leading_spaces(text, new_text=None):
+              count = 0
+              for char in text:
+                  if char != " ":
+                      break
+                  count += 1
+              if new_text is None:
+                  return count
+              return " " * count + new_text
+          
+          
+          def update_builtin_functions(scm_content, new_functions):
+              pattern = re.compile(r'(\s*@function\.builtin\n\s*"\^\(([\w|]+)\)\$"\))')
+          
+              match = pattern.search(scm_content)
+          
+              existing_functions = match.group(0)
+              new_functions = [new_function for new_function in new_functions if new_function not in existing_functions]
+          
+              new_function_string = "|".join(new_functions)
+              updated_functions = existing_functions.replace(")$", f"|{new_function_string})$")
+              return scm_content.replace(existing_functions, updated_functions)
+          
+          
+          def add_keywords(scm_content, new_keywords):
+              list_pattern = r'\[\n((?:\s*"([a-zA-Z]+)"\n)+)\] @keyword'
+          
+              full_match = re.search(list_pattern, scm_content)
+              list_contents = full_match.group(1)
+          
+              new_keywords = [new_keyword for new_keyword in new_keywords if new_keyword not in list_contents]
+          
+              space_n = count_leading_spaces(list_contents.split("\n")[0])
+          
+              formatted_list_contents = "".join([" " * space_n + f'"{key}"' + "\n" for key in new_keywords])
+              updated_list_contents = list_contents + formatted_list_contents
+              return scm_content.replace(list_contents, updated_list_contents)
+          
+          
+          def extract_blocks(code, definition, target_value: str, replace_value: list):
+              pattern = rf"{definition}:\s*\$\s*=>\s*seq\("
+              pattern = re.compile(pattern)
+              match = next(pattern.finditer(code))
+          
+              start_index = match.end() - 1
+              count = 0
+              i = start_index
+          
+              while i < len(code):
+                  if code[i] == "(":
+                      count += 1
+                  elif code[i] == ")":
+                      count -= 1
+          
+                  if count == 0:
+                      break
+          
+                  i += 1
+              block = code[start_index + 1 : i]
+              lines = block.split("\n")
+              if target_value is None:
+                  lines[0] = "\n" + "\n".join([" " * count_leading_spaces(lines[1]) + v for v in replace_value])
+              else:
+                  for l_i, l in enumerate(lines):
+                      if target_value in l:
+                          for v_i, v in enumerate(replace_value[::-1]):
+                              lines[l_i - v_i] = count_leading_spaces(lines[l_i - v_i], v)
+                          break
+              new_block = "\n".join(lines)
+          
+              new_code = code[: start_index + 1] + new_block + code[i:]
+              return new_code
+          
+          
+          def get_env_keywords(key: str, default: str = None):
+              keywords = os.environ[key] if default is None else os.environ.get(key, default)
+              return [k.strip() for k in keywords.split(",") if k.strip()]
+          
+          
+          def keyword_list_to_str(keywords: list[str]):
+              return ", ".join([f"'{k}'" for k in keywords])
+          
+          
+          def modify_scm(scm_file, function_builtin, new_keywords):
+              with open(scm_file) as f:
+                  scm_file_content = f.read()
+          
+              updated_scm_content = update_builtin_functions(scm_file_content, function_builtin)
+              updated_scm_content = add_keywords(updated_scm_content, new_keywords)
+          
+              with open(scm_file, "w") as f:
+                  f.write(updated_scm_content)
+          
+          
+          def modify_grammar():
+              with open(grammar_js) as f:
+                  js_code = f.read()
+          
+              definition = "function_definition"
+              target_value = "def"
+              replace_value = [
+                  f"optional(choice({keyword_list_to_str(function_modifiers)})),",
+                  f"choice({keyword_list_to_str(function_keywords)}),",
+              ]
+          
+              new_code = extract_blocks(js_code, definition, target_value, replace_value)
+          
+              definition = "class_definition"
+              target_value = "class"
+              replace_value = [f"choice({keyword_list_to_str(class_keywords)}),"]
+              new_code = extract_blocks(new_code, definition, target_value, replace_value)
+          
+              definition = "assignment"
+              target_value = None
+              replace_value = [f"optional(choice({keyword_list_to_str(declaration_keywords)})),"]
+              new_code = extract_blocks(new_code, definition, target_value, replace_value)
+          
+              definition = "augmented_assignment"
+              target_value = None
+              replace_value = [f"optional(choice({keyword_list_to_str(declaration_keywords)})),"]
+              new_code = extract_blocks(new_code, definition, target_value, replace_value)
+          
+              with open(grammar_js, "w") as f:
+                  f.write(new_code)
+          
+          
+          if __name__ == "__main__":
+              highlight_scm_1 = "queries/highlights.scm"
+              highlight_scm_2 = "runtime/queries/mojo/highlights.scm"
+              grammar_js = "grammar.js"
+          
+              (function_keywords, class_keywords, declaration_keywords, function_modifiers, function_builtin) = (
+                  get_env_keywords("FUNCTION_KEYWORDS"),
+                  get_env_keywords("CLASS_KEYWORDS"),
+                  get_env_keywords("DECLARATION_KEYWORDS"),
+                  get_env_keywords("FUNCTION_MODIFIERS"),
+                  get_env_keywords("FUNCTION_BUILTIN"),
+              )
+          
+              new_keywords = function_keywords + class_keywords + declaration_keywords + function_modifiers
+          
+              modify_scm(highlight_scm_1, function_builtin, new_keywords)
+              modify_scm(highlight_scm_2, function_builtin, new_keywords)
+          
+              modify_grammar()
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Generate parser
+      run: |
+        npm install -g tree-sitter-cli
+        tree-sitter generate
+
+    - name: Commit changes
+      run: |
+        
+        git config --global user.name 'GitHub Actions'
+        git config --global user.email ''
+        git add -A
+        echo $(git status)
+
+        if git diff --staged --quiet; then
+          echo "No changes, skipping commit and push."
+        else
+          git commit -m "Update from tree-sitter-python"
+          git push origin master
+        fi

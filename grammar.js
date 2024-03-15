@@ -1,9 +1,9 @@
 /**
- * @file Python grammar for tree-sitter
+ * @file Mojo grammar for tree-sitter
  * @author Max Brunsfeld <maxbrunsfeld@gmail.com>
  * @license MIT
- * @see {@link https://docs.python.org/2/reference/grammar.html|Python 2 grammar}
- * @see {@link https://docs.python.org/3/reference/grammar.html|Python 3 grammar}
+ * @see {@link https://docs.mojo.org/2/reference/grammar.html|Mojo 2 grammar}
+ * @see {@link https://docs.mojo.org/3/reference/grammar.html|Mojo 3 grammar}
  */
 
 /* eslint-disable arrow-parens */
@@ -39,7 +39,7 @@ const PREC = {
 const SEMICOLON = ';';
 
 module.exports = grammar({
-  name: 'python',
+  name: 'mojo',
 
   extras: $ => [
     $.comment,
@@ -407,8 +407,8 @@ module.exports = grammar({
     )),
 
     function_definition: $ => seq(
-      optional('async'),
-      'def',
+      optional(choice('async', 'owned', 'borrowed', 'inout')),
+      choice('def', 'fn'),
       field('name', $.identifier),
       field('type_parameters', optional($.type_parameter)),
       field('parameters', $.parameters),
@@ -469,7 +469,7 @@ module.exports = grammar({
     )),
 
     class_definition: $ => seq(
-      'class',
+      choice('class', 'struct'),
       field('name', $.identifier),
       field('type_parameters', optional($.type_parameter)),
       field('superclasses', optional($.argument_list)),
@@ -842,6 +842,7 @@ module.exports = grammar({
     ),
 
     assignment: $ => seq(
+      optional(choice('var', 'let', 'alias')),
       field('left', $._left_hand_side),
       choice(
         seq('=', field('right', $._right_hand_side)),
@@ -851,6 +852,7 @@ module.exports = grammar({
     ),
 
     augmented_assignment: $ => seq(
+      optional(choice('var', 'let', 'alias')),
       field('left', $._left_hand_side),
       field('operator', choice(
         '+=', '-=', '*=', '/=', '@=', '//=', '%=', '**=',
