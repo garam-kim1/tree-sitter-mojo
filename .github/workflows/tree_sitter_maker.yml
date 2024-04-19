@@ -10,7 +10,7 @@ on:
 
 env:
   FUNCTION_KEYWORDS: 'def,fn'
-  CLASS_KEYWORDS: 'class,struct'
+  CLASS_KEYWORDS: 'class,struct,trait'
   DECLARATION_KEYWORDS: 'var,let,alias'
   FUNCTION_MODIFIERS: 'async,owned,borrowed,inout'
   FUNCTION_BUILTIN: '__mlir_attr,__mlir_op,__mlir_type'
