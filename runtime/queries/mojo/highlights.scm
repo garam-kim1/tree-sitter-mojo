@@ -22,6 +22,7 @@
   "fn"
   "class"
   "struct"
+  "trait"
   "var"
   "let"
   "alias"

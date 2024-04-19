@@ -469,7 +469,7 @@ module.exports = grammar({
     )),
 
     class_definition: $ => seq(
-      choice('class', 'struct'),
+      choice('class', 'struct', 'trait'),
       field('name', $.identifier),
       field('type_parameters', optional($.type_parameter)),
       field('superclasses', optional($.argument_list)),

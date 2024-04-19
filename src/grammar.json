@@ -1924,6 +1924,10 @@
             {
               "type": "STRING",
               "value": "struct"
+            },
+            {
+              "type": "STRING",
+              "value": "trait"
             }
           ]
         },

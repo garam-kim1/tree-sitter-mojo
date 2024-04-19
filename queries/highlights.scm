@@ -132,6 +132,7 @@
   "case"
   "fn"
   "struct"
+  "trait"
   "var"
   "let"
   "alias"
