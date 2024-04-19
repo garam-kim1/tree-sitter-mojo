@@ -52,6 +52,7 @@ After configuring, fetch, and build the grammar using the following commands in 
 ```bash
 hx --grammar fetch
 cd ~/.config/helix
+mkdir -p runtime/queries/mojo/
 cp -r runtime/grammars/sources/mojo/runtime/queries/mojo/* runtime/queries/mojo/
 hx --grammar build
 ```
