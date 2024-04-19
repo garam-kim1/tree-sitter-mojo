@@ -254,11 +254,16 @@ jobs:
         git config --global user.name 'GitHub Actions'
         git config --global user.email ''
         git add -A
-        echo $(git status)
 
         if git diff --staged --quiet; then
           echo "No changes, skipping commit and push."
         else
           git commit -m "Update from tree-sitter-python"
+          
+          LATEST_HASH=$(git rev-parse HEAD)
+          sed -i "s/rev = \".*\"/rev = \"$LATEST_HASH\"/" README.md
+          git add README.md
+          git commit -m "Update commit hash in README.md"
+
           git push origin master
         fi
