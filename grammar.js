@@ -56,6 +56,7 @@ module.exports = grammar({
     [$.named_expression, $.as_pattern],
     [$.print_statement, $.primary_expression],
     [$.type_alias_statement, $.primary_expression],
+    [$.match_statement, $.primary_expression],
   ],
 
   supertypes: $ => [
@@ -806,6 +807,10 @@ module.exports = grammar({
       field('argument', $.primary_expression),
     )),
 
+    _not_in: _ => seq('not', 'in'),
+
+    _is_not: _ => seq('is', 'not'),
+
     comparison_operator: $ => prec.left(PREC.compare, seq(
       $.primary_expression,
       repeat1(seq(
@@ -819,9 +824,9 @@ module.exports = grammar({
             '>',
             '<>',
             'in',
-            alias(seq('not', 'in'), 'not in'),
+            alias($._not_in, 'not in'),
             'is',
-            alias(seq('is', 'not'), 'is not'),
+            alias($._is_not, 'is not'),
           )),
         $.primary_expression,
       )),
@@ -1173,11 +1178,13 @@ module.exports = grammar({
           'exec',
           'async',
           'await',
-          'match',
         ),
         $.identifier,
       )),
-      alias('type', $.identifier),
+      alias(
+        choice('type', 'match'),
+        $.identifier,
+      ),
     ),
 
     true: _ => 'True',

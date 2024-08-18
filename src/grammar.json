@@ -4060,6 +4060,32 @@
         ]
       }
     },
+    "_not_in": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "not"
+        },
+        {
+          "type": "STRING",
+          "value": "in"
+        }
+      ]
+    },
+    "_is_not": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "is"
+        },
+        {
+          "type": "STRING",
+          "value": "not"
+        }
+      ]
+    },
     "comparison_operator": {
       "type": "PREC_LEFT",
       "value": 13,
@@ -4116,17 +4142,8 @@
                       {
                         "type": "ALIAS",
                         "content": {
-                          "type": "SEQ",
-                          "members": [
-                            {
-                              "type": "STRING",
-                              "value": "not"
-                            },
-                            {
-                              "type": "STRING",
-                              "value": "in"
-                            }
-                          ]
+                          "type": "SYMBOL",
+                          "name": "_not_in"
                         },
                         "named": false,
                         "value": "not in"
@@ -4138,17 +4155,8 @@
                       {
                         "type": "ALIAS",
                         "content": {
-                          "type": "SEQ",
-                          "members": [
-                            {
-                              "type": "STRING",
-                              "value": "is"
-                            },
-                            {
-                              "type": "STRING",
-                              "value": "not"
-                            }
-                          ]
+                          "type": "SYMBOL",
+                          "name": "_is_not"
                         },
                         "named": false,
                         "value": "is not"
@@ -6141,10 +6149,6 @@
                 {
                   "type": "STRING",
                   "value": "await"
-                },
-                {
-                  "type": "STRING",
-                  "value": "match"
                 }
               ]
             },
@@ -6155,8 +6159,17 @@
         {
           "type": "ALIAS",
           "content": {
-            "type": "STRING",
-            "value": "type"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "type"
+              },
+              {
+                "type": "STRING",
+                "value": "match"
+              }
+            ]
           },
           "named": true,
           "value": "identifier"
@@ -6304,6 +6317,10 @@
     ],
     [
       "type_alias_statement",
+      "primary_expression"
+    ],
+    [
+      "match_statement",
       "primary_expression"
     ]
   ],
