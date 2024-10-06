@@ -51,17 +51,6 @@
     "start": "tree-sitter playground",
     "test": "node --test bindings/node/*_test.js"
   },
-  "tree-sitter": [
-    {
-      "scope": "source.mojo",
-      "file-types": [
-        "mojo"
-      ],
-      "injection-regex": "mojo",
-      "highlights": "queries/highlights.scm",
-      "tags": "queries/tags.scm"
-    }
-  ],
   "eslintConfig": {
     "env": {
       "commonjs": true,
