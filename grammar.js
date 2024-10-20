@@ -6,9 +6,7 @@
  * @see {@link https://docs.mojo.org/3/reference/grammar.html|Mojo 3 grammar}
  */
 
-/* eslint-disable arrow-parens */
-/* eslint-disable camelcase */
-/* eslint-disable-next-line spaced-comment */
+
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
@@ -1212,8 +1210,7 @@ module.exports.PREC = PREC;
  *
  * @param {RuleOrLiteral} rule
  *
- * @return {SeqRule}
- *
+ * @returns {SeqRule}
  */
 function commaSep1(rule) {
   return sep1(rule, ',');
@@ -1226,8 +1223,7 @@ function commaSep1(rule) {
  *
  * @param {RuleOrLiteral} separator
  *
- * @return {SeqRule}
- *
+ * @returns {SeqRule}
  */
 function sep1(rule, separator) {
   return seq(rule, repeat(seq(separator, rule)));

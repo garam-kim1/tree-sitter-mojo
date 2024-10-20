@@ -21,6 +21,10 @@
       {
         "name": "Max Brunsfeld",
         "email": "maxbrunsfeld@gmail.com"
+      },
+      {
+        "name": "Amaan Qureshi",
+        "email": "amaanq12@gmail.com"
       }
     ],
     "links": {
@@ -31,7 +35,7 @@
     "c": true,
     "go": true,
     "node": true,
-    "python": true,
+    "mojo": true,
     "rust": true,
     "swift": true
   }
