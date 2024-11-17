@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 project(tree-sitter-mojo
-        VERSION "0.23.2"
+        VERSION "0.23.4"
         DESCRIPTION "Mojo grammar for tree-sitter"
         HOMEPAGE_URL "https://github.com/tree-sitter/tree-sitter-mojo"
         LANGUAGES C)
@@ -53,7 +53,7 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/tree-sitter-mojo.pc"
 install(TARGETS tree-sitter-mojo
         LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 
-add_custom_target(test "${TREE_SITTER_CLI}" test
+add_custom_target(ts-test "${TREE_SITTER_CLI}" test
                   WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
                   COMMENT "tree-sitter test")
 
