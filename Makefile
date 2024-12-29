@@ -4,7 +4,7 @@ endif
 
 LANGUAGE_NAME := tree-sitter-mojo
 HOMEPAGE_URL := https://github.com/tree-sitter/tree-sitter-mojo
-VERSION := 0.23.5
+VERSION := 0.23.6
 
 # repository
 SRC_DIR := src

@@ -359,10 +359,10 @@ module.exports = grammar({
     except_clause: $ => seq(
       'except',
       optional(seq(
-        $.expression,
+        field('value', $.expression),
         optional(seq(
           choice('as', ','),
-          $.expression,
+          field('alias', $.expression),
         )),
       )),
       ':',
@@ -462,9 +462,9 @@ module.exports = grammar({
 
     type_alias_statement: $ => prec.dynamic(1, seq(
       'type',
-      $.type,
+      field('left', $.type),
       '=',
-      $.type,
+      field('right', $.type),
     )),
 
     class_definition: $ => seq(
@@ -945,7 +945,7 @@ module.exports = grammar({
     )),
 
     type: $ => choice(
-      $.expression,
+      prec(1, $.expression),
       $.splat_type,
       $.generic_type,
       $.union_type,
@@ -953,7 +953,13 @@ module.exports = grammar({
       $.member_type,
     ),
     splat_type: $ => prec(1, seq(choice('*', '**'), $.identifier)),
-    generic_type: $ => prec(1, seq($.identifier, $.type_parameter)),
+    generic_type: $ => prec(1, seq(
+      choice(
+        $.identifier,
+        alias('type', $.identifier),
+      ),
+      $.type_parameter,
+    )),
     union_type: $ => prec.left(seq($.type, '|', $.type)),
     constrained_type: $ => prec.right(seq($.type, ':', $.type)),
     member_type: $ => seq($.type, '.', $.identifier),
