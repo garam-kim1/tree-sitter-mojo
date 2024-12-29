@@ -42,7 +42,7 @@ language-servers = [ "mojo" ]
 
 [[grammar]]
 name = "mojo"
-source = { git = "https://github.com/garam-kim1/tree-sitter-mojo", rev = "ac5605b005be6a1a1284c2f5234a3e19b2751542" }
+source = { git = "https://github.com/garam-kim1/tree-sitter-mojo", rev = "d0900c9d444088004a3683131c29b849529aef6d" }
 ```
 
 ### 2. Install the Grammar
